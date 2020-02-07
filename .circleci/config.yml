@@ -78,7 +78,24 @@ jobs:
       - run:
           name: Database setup
           command: bundle exec rails db:schema:load --trace
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+          
       # Run rspec in parallel
+  acceptance-test:
+    parallelism: 3
+    docker:
+      - *default_docker_ruby_executor
+      - *postgres
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - rails-demo-bundle-v2-{{ checksum "Gemfile.lock" }}
+            - rails-demo-bundle-v2-
       - run:
           command: |
             mkdir /tmp/test-results
@@ -98,3 +115,7 @@ workflows:
       - test:
           requires:
             - build
+      - acceptance-test:
+          requires:
+            -build
+            -test
