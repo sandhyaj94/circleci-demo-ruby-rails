@@ -10,9 +10,7 @@ jobs:
       - checkout
       # Bundle install dependencies
       - run: bundle install --path vendor/bundle
-      - run: rvm install 2.6.3
-      - run: rvm use 2.6.3
-
+      
       # Database setup
       - run: bundle exec rake db:create db:schema:load
 
